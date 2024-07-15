@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.Models.article import Article
-from app.Schemas.article import ArticleCreate
+from app.Schemas.article import ArticleCreate, ArticleUpdate
 
 
 def get_article(db: Session, article_id: int):
@@ -16,8 +16,30 @@ def get_articles(db: Session, skip: int = 0, limit: int = 10):
 
 
 def create_article(db: Session, article: ArticleCreate):
-    db_article = Article(**article.dict())
+    db_article = Article(**article.model_dump())
     db.add(db_article)
     db.commit()
     db.refresh(db_article)
     return db_article
+
+
+def update_article(db: Session, article_id: int, article: ArticleUpdate):
+    db_article = db.query(Article).filter(Article.id == article_id).first()
+    if db_article:
+        for key, value in article.model_dump(exclude_unset=True).items():
+            setattr(db_article, key, value)
+        db.commit()
+        db.refresh(db_article)
+        return db_article
+    
+    return None
+
+
+def delete_article(db: Session, article_id: int):
+    db_article = db.query(Article).filter(Article.id == article_id).first()
+    if db_article:
+        db.delete(db_article)
+        db.commit()
+        return db_article
+    
+    return None

@@ -12,6 +12,13 @@ class ArticleCreate(ArticleBase):
     tags: list[Tag] = []
 
 
+class ArticleUpdate(BaseModel):
+    title: str = None
+    description: str = None
+    owner_id: int = None
+    tags: list[Tag] = []
+
+
 class Article(ArticleBase):
     id: int
     owner_id: int

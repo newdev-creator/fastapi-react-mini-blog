@@ -9,6 +9,10 @@ class TagCreate(TagBase):
     pass
 
 
+class TagUpdate(BaseModel):
+    title: str = None
+
+
 class Tag(TagBase):
     id: int
 
